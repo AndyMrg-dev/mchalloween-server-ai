@@ -1,0 +1,24 @@
+ Secrets & Private Configs
+config.json
+server.properties
+
+ World Files (Local Changes)
+world/
+
+Logs
+*.log
+logs/
+
+ Python / Environment
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+ OS Junk
+.DS_Store
+Thumbs.db
+
+ World
+world/
+world.zip
