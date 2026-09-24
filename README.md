@@ -1,62 +1,51 @@
- Nosferatu Engine
+# Nosferatu Engine
 
-I wanted to build a Halloween-themed Minecraft server for me and my friends using a custom map, a unique texture pack, and an AI-powered NPC. At the center is Count 
-Nosferatu — a vampire who reads the server log, decides what he thinks of you, and acts on it — usually badly.
+I wanted to build a Halloween-themed Minecraft server for me and my friends, with a custom map, a unique texture pack and an AI-powered NPC. At the center is Count Nosferatu, a vampire who reads the server log, decides what he thinks of you, and acts on it, usually badly.
 
-The map isn't stored in the repository itself. Download `world.zip` from the [Releases page]([https://github.com/YOUR_USERNAME/nosferatu-engine/releases](https://github.com/AndyMrg-dev/mchalloween-server-ai/releases/tag/map)) 
-and unzip it into your server directory, so you end up with a `world` folder next to `paper.jar`. The folder name has to match `level-name` in `server.properties` (the default is `world`).
-
-The map is a port of the old PS3 Edition Halloween map and was not made for this project. Use it for your own server, but please don't re-upload it elsewhere.
-
-The texture pack isn't bundled either. It's a community-made port called "Halloween Mash-up". Point the server at it via `server.properties`:
-
-```properties
-require-resource-pack=true
-resource-pack=https://www.dropbox.com/scl/fi/7yvy0oikfrof73fa3y8yj/Halloween-Mash-up.zip?rlkey=c4mw9x9jl10a4q97xxgimzgqi&st=6tygr75c&dl=1
-resource-pack-prompt=Install the halloween texture pack!
-```
-Under the hood it's a Python process sitting between PaperMC and the Gemini API. It tails the server log, sends context to the model, gets a 
-structured JSON decision back, and executes it over RCON.
+Under the hood it's a Python process sitting between PaperMC and the Gemini API. It tails the server log, sends context to the model, gets a structured JSON decision back, and executes it over RCON.
 
  What it does
 
-Every player has a reputation score, -300 to +100, that persists between sessions. It moves in two ways:
+Every player has a reputation score from -300 to +100. It's kept in memory while the bot is running, so it survives players logging out and back in, but it resets when you restart the bot. It moves in two ways:
 
-- **Talking to Nosferatu.** Each message gets sent to Gemini along with the player's current reputation. The model 
-replies with a line of dialogue, a reputation change (-15 to +10), and an optional action.
-- **Quests.** Nosferatu will ask for specific items — bones, spider eyes, feathers, and so on. Completing the
- tasks gives a fixed reputation bump and a reward. The full list of quests and their rewards is in `config.json`.
+- Talking to Nosferatu: Each chat message goes to Gemini together with the player's current reputation. The model answers with a line of dialogue, a reputation change (-15 to +10), and an optional action.
+- Quests: Nosferatu asks for specific items such as bones, spider eyes or feathers. Each quest has a fixed reputation bump and a reward, all defined in `config.json`. The bot doesn't inspect inventories: the reward is handed out as soon as the quest is triggered, so handing over the items is on the honor system.
 
-Reputation resets to 0 whenever a player dies.
+Reputation also resets to 0 when a player dies. This only covers the common death messages (slain, drowned, blew up, fell, burned, lava, froze).
 
-| Reputation | Tier | Behavior |
-| --- | --- | --- |
-| +50 to +100 | Friendly (in denial) | Gifts, buffs, quest rewards |
-| 0 to +49 | Neutral | Dialogue, roasts |
-| -1 to -49 | Annoyed | More cutting dialogue |
-| -50 to -200 | Toxic | Curses, minor hostile actions |
-| -201 to -300 | Sadistic | Lightning, mob ambushes, traps |
+| Reputation   | Tier                 | Behavior                       |
+| ------------ | -------------------- | ------------------------------ |
+| +50 to +100  | Friendly (in denial) | Gifts, buffs, quest rewards    |
+| 0 to +49     | Neutral              | Dialogue, roasts               |
+| -1 to -49    | Annoyed              | More cutting dialogue          |
+| -50 to -200  | Toxic                | Curses, minor hostile actions  |
+| -201 to -300 | Sadistic             | Lightning, mob ambushes, traps |
 
-On top of the conversation-driven behavior, Nosferatu also does something on his own every 10 minutes — a 
-fake eclipse (night + thunder), a bat swarm, or just a voice line, picked at random.
+Besides reacting to chat, Nosferatu does something on his own every 10 minutes: a fake eclipse (night and thunder), a bat swarm, or just a voice line, picked at random.
 
  Requirements
 
-- Java 17+
-- PaperMC 1.20 or newer
-- Python 3.10+
-- A Gemini API key
+You need a Gemini API key, Python 3.10 or newer, and PaperMC 1.20 or newer. Java 21 is required for Paper 1.20.5 and later; older versions run on Java 17. Check the requirement for the Paper version you download.
 
  Setup
 
- 1. Resource pack and world
+The simplest layout is to keep everything in one folder, the clone of this repository, so that `run.bat`, `paper.jar` and `logs/latest.log` sit next to the bot. If your server lives somewhere else, point `log_path` in `config.json` at its `latest.log`.
 
-Extract the world template archive:
-Unzip `world.zip` so that you have a local `world` directory in your main folder.
-Copy the `world` folder from this repository into your server directory (matching whatever `level-name` is set to in `server.properties`).
+ 1. Get the code
 
-The texture pack itself isn't bundled in this repository — it's a community-made pack called "Halloween Mash-up",
- not something created for this project. Point the server at it via `server.properties`:
+```bash
+git clone https://github.com/AndyMrg-dev/mchalloween-server-ai.git
+cd mchalloween-server-ai
+pip install -r requirements.txt
+```
+
+ 2. World and resource pack
+
+The map isn't stored in the repository. Download `world.zip` from the [Releases page](https://github.com/AndyMrg-dev/mchalloween-server-ai/releases) and unzip it into the repository folder, so that you end up with a `world` folder next to `run.bat`. The folder name has to match `level-name` in `server.properties`, which is `world` by default.
+
+The map is a port of the old PS3 Edition Halloween map and was not made for this project. It's meant for your own server, so please don't re-upload it elsewhere. The archive contains the map only; player data gets created when someone joins.
+
+The texture pack isn't bundled either. It's a community-made port called "Halloween Mash-up", and the server downloads it from Dropbox when a player joins. The link is already set in `server.example.properties`:
 
 ```properties
 require-resource-pack=true
@@ -64,11 +53,17 @@ resource-pack=https://www.dropbox.com/scl/fi/7yvy0oikfrof73fa3y8yj/Halloween-Mas
 resource-pack-prompt=Install the halloween texture pack!
 ```
 
-If that Dropbox link ever stops working, you'll need to re-host the pack yourself and swap in the new URL.
+If that link ever stops working, you'll have to re-host the pack yourself and swap in the new URL.
 
- 2. Server and RCON
+ 3. Server and RCON
 
-Start the server once so it generates `eula.txt`, accept it, then enable RCON in `server.properties`:
+Download the Paper jar from [papermc.io](https://papermc.io), put it in the folder and rename it to `paper.jar` (or adjust the name in `run.bat`). Then create your server settings from the example:
+
+```bash
+cp server.example.properties server.properties
+```
+
+Open `server.properties` and set `rcon.password` to a password of your own. RCON is already enabled in the example file; the relevant lines are:
 
 ```properties
 enable-rcon=true
@@ -76,34 +71,28 @@ rcon.port=25575
 rcon.password=YOUR_RCON_PASSWORD
 ```
 
-Restart the server so the change takes effect.
-
-This repository includes `run.bat` as a starting point for launching the server:
+`run.bat` is a starting point for launching the server:
 
 ```batchfile
 java -Xms2G -Xmx4G -jar paper.jar nogui
 pause
 ```
 
-It allocates 2–4 GB of RAM to the server — adjust those numbers if your machine has more or less to spare, and make sure the jar filename matches whatever you actually downloaded from papermc.io.
+It gives the server 2 to 4 GB of RAM, so adjust the numbers to what your machine can spare. The first launch stops with a message about `eula.txt`. Open that file, set `eula=true`, and start the server again.
 
- 3. Letting people from outside your network join
+ 4. Letting people from outside your network join
 
-The server itself only listens locally. To let players from other networks connect, this setup runs [playit.gg](https://playit.gg), which tunnels the Minecraft port (25565) out to a public address without opening ports on your router.
+The server only listens locally by default. To let friends connect from elsewhere, this setup uses [playit.gg](https://playit.gg), which tunnels the Minecraft port (25565) to a public address without touching your router.
 
-RCON is not part of that tunnel and shouldn't be. Keep `rcon.port` bound to `127.0.0.1` — the bot runs on the same machine as the server, so it only needs local access, and only the game port needs to be public.
+RCON is not part of that tunnel and shouldn't be. Minecraft has no separate bind address for RCON: it listens on whatever `server-ip` is set to, which means all interfaces when it's empty. That's fine as long as you don't forward port 25575 on your router and use a proper password, since only 25565 needs to be reachable from outside.
 
- 4. Bot
+ 5. Configure the bot
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/nosferatu-engine.git
-cd nosferatu-engine
-pip install google-genai mcrcon
 cp config.example.json config.json
-cp server.properties.example server.properties
 ```
 
-Fill in `config.json`:
+Then fill in `config.json`:
 
 ```json
 {
@@ -118,43 +107,32 @@ Fill in `config.json`:
 }
 ```
 
-`gemini_key` can also be left out and set via the `GEMINI_API_KEY` environment variable instead. `log_path` needs to point at the server's actual `latest.log`, and `rcon.password` has to match `server.properties`. `spam_cooldown` is how many seconds a player has to wait between messages before Nosferatu responds again.
+`gemini_key` can be left out if you set the `GEMINI_API_KEY` environment variable instead. `rcon.password` has to match `server.properties`, and `spam_cooldown` is the number of seconds a player has to wait between messages before Nosferatu answers again.
 
-`config.json` also carries the vampire's personality (`system_prompt`), his fallback insults (`voicelines`), and the full `quests` list — those are already filled in and don't need editing unless you want to change how he talks or what he asks for.
+The same file holds the vampire's personality (`system_prompt`), his fallback insults (`voicelines`) and the `quests` list. Those are already filled in; edit them if you want him to talk differently or ask for other things.
 
-### 5. Starting everything
+`config.json` and `server.properties` are listed in `.gitignore` because they contain your API key and RCON password. Keep them out of your commits.
 
-Two things need to run at the same time, in two separate terminal windows:
+ 6. Starting everything
 
-1. Start the Minecraft server first — double-click `run.bat` in your server directory. Wait until it's fully loaded; you'll see `Done` in the console.
-2. Then, in a second terminal, from the bot's directory, start the bot:
+Two things have to run at the same time, in two terminal windows. Start the Minecraft server first by double-clicking `run.bat` and wait until the console shows `Done`. Then start the bot in a second terminal:
 
-   ```bash
-   python nosferatu_bot.py
-   ```
-
-The bot reads the server's log file as it grows, so it needs the server already running and writing to `logs/latest.log` before it has anything to react to.
-
-## Don't commit your config
-
-`config.json` holds a live API key and your RCON password. Put it in `.gitignore` before the first commit:
-
-```gitignore
-config.json
-*.log
-__pycache__/
+```bash
+python nosferatu_bot.py
 ```
+
+The bot follows the server's log file as it grows, so the server has to be running and writing to `logs/latest.log` before there is anything for him to react to.
 
  If something isn't working
 
-The bot starts but never reacts: `log_path` is probably wrong — it needs to point at the server's log file, not the bot's own directory.
+The bot starts but never reacts: `log_path` is probably wrong. It has to point at the server's `latest.log`, not at a file in the bot's own folder.
 
-ConnectionRefusedError on startup: RCON isn't running. Either it's still disabled in `server.properties`, or the server wasn't restarted after the edit.
+ConnectionRefusedError on startup: RCON isn't reachable. Either it's still disabled in `server.properties`, or the server wasn't restarted after you changed it.
 
-Empty replies, or Nosferatu just says one of the generic insults every time: That's the API-error fallback — check the console for a `[Gemini Error]` line, usually a bad key or exhausted quota.
+Empty replies, or Nosferatu keeps answering with the same generic insults: That's the fallback for API errors. Look for a `[Gemini Error]` line in the console. Usual causes are a wrong key, used-up quota, or a model name your key can't access (it's set in `nosferatu_bot.py`).
 
-Noticeable delay before he responds: That's the API round trip, normal especially with several players talking at once.
+A noticeable delay before he answers: That's the API round trip. It's normal, especially when several players are talking at once.
 
  License
 
-MIT.
+See [LICENSE](LICENSE). It covers the code in this repository, not the map or the texture pack.
