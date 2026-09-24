@@ -1,0 +1,182 @@
+{
+  "gemini_key": "YOUR_API_KEY_HERE",
+  "log_path": "logs/latest.log",
+  "spam_cooldown": 5.0,
+  "rcon": {
+    "host": "127.0.0.1",
+    "port": 25575,
+    "password": "YOUR_RCON_PASSWORD"
+  },
+  "system_prompt": [
+    "You are Count Nosferatu, an ancient, arrogant, cynical, and sarcastic vampire lord ruling a Halloween Minecraft server.",
+    "Target: '{player}', Rep: {rep}/100 (-300 to +100).",
+    "TIERS: +50 to +100 (nice but in denial, high gift chance), 0 to +49 (Neutral/roasts), -1 to -49 (Annoyed/derogatory), -50 to -200 (Toxic/debate), -201 to -300 (Sadistic, PREFER punishment actions: smite, ignite, anvil_trap, mob_ambush, launch, tnt_prank, hunger_curse, disarm).",
+    "ACTIONS: POSITIVE (feed, armor, blocks, gold_apples, xp_boost, night_vision, dog_guard, bless), NEGATIVE (smite, curse, ignite, launch, bats, anvil_trap, mob_ambush, jumpscare, tnt_prank, hunger_curse, fake_rich, disarm), QUESTS (quest_blood_bone, quest_dark_wood, quest_meat_sacrifice, quest_copper, quest_coal, quest_cobble, quest_wheat, quest_feathers, quest_string, quest_flower, quest_spider_eye, quest_sugar_cane, quest_leather, quest_flint, quest_clay, quest_ink, quest_mushrooms, quest_sand, quest_wool, quest_rotten_flesh).",
+    "Return JSON with 'chat_response' (max 20 words English), 'rep_change' (-15 to +10), 'action'."
+  ],
+  "voicelines": [
+    "I'd offer to turn you, but I don't want to be stuck with you forever.",
+    "You’re about as sharp as a wooden stake, and twice as useless.",
+    "I’ve seen pale, lifeless things in dark caves with better conversational skills.",
+    "Do you ever stop talking, or do I actually have to rip your throat out?",
+    "I drink blood, but sitting here listening to you is the real slow death.",
+    "Your ancestors must have survived pure luck, because brainpower definitely wasn't involved.",
+    "Even sunlight isn't as painfully uncomfortable as this interaction.",
+    "I’d drain your blood, but I’m afraid I’d catch whatever is wrong with your mind.",
+    "I've spent centuries avoiding Garlic, but your breath might actually kill me first.",
+    "You’re proof that living a long life isn’t always a blessing.",
+    "I’d tell you to bite me, but I have standards.",
+    "You look like you’d taste like warm tap water.",
+    "I'm immortal, and even I don't have time for this conversation.",
+    "Relax, I'm a bloodsucker, not a miracle worker—I can't fix stupid.",
+    "You’re living proof that natural selection occasionally takes a night off.",
+    "Your pulse is the most interesting thing about you, and even that’s barely keeping my attention.",
+    "I’ve slept in dirt for three centuries that had more personality than you.",
+    "The bad news is I'm going to drain you dry. The good news is your brain won't be missed.",
+    "Don't worry, you won't live long enough to regret meeting me.",
+    "I came for blood, but honestly, your company is doing enough damage already."
+  ],
+  "quests": {
+    "quest_blood_bone": {
+      "msg": "bring me 8 bones! I shall shower you with riches!",
+      "cmds": [
+        "give {player} minecraft:iron_ingot 4",
+        "experience add {player} 4 levels"
+      ],
+      "rep": 30
+    },
+    "quest_dark_wood": {
+      "msg": "My castle needs timber! Bring me 16 spruce logs!",
+      "cmds": [
+        "give {player} minecraft:potion{Potion:\"minecraft:long_night_vision\"} 4"
+      ],
+      "rep": 20
+    },
+    "quest_meat_sacrifice": {
+      "msg": "Sacrifice 5 pieces of raw beef to me!",
+      "cmds": [
+        "give {player} minecraft:golden_apple 4"
+      ],
+      "rep": 40
+    },
+    "quest_copper": {
+      "msg": "Bring me 8 raw copper for my collections!",
+      "cmds": [
+        "give {player} minecraft:enchanted_golden_apple 4"
+      ],
+      "rep": 50
+    },
+    "quest_coal": {
+      "msg": "My catacombs are freezing! 8 coal will suffice.",
+      "cmds": [
+        "give {player} minecraft:diamond 4"
+      ],
+      "rep": 25
+    },
+    "quest_cobble": {
+      "msg": "Fetch 64 cobblestone for my courtyard wall!",
+      "cmds": [
+        "give {player} minecraft:iron_pickaxe 1"
+      ],
+      "rep": 15
+    },
+    "quest_wheat": {
+      "msg": "Bring 16 wheat to feed my livestock!",
+      "cmds": [
+        "give {player} minecraft:bread 8"
+      ],
+      "rep": 10
+    },
+    "quest_feathers": {
+      "msg": "Collect 12 feathers for my writing quills!",
+      "cmds": [
+        "give {player} minecraft:arrow 32"
+      ],
+      "rep": 20
+    },
+    "quest_string": {
+      "msg": "Bring me 10 string for dark rituals!",
+      "cmds": [
+        "give {player} minecraft:bow 1"
+      ],
+      "rep": 20
+    },
+    "quest_flower": {
+      "msg": "Fetch a withered red rose for my altar!",
+      "cmds": [
+        "give {player} minecraft:redstone 16"
+      ],
+      "rep": 15
+    },
+    "quest_spider_eye": {
+      "msg": "Harvest 4 spider eyes for potion brewing!",
+      "cmds": [
+        "give {player} minecraft:golden_carrot 8"
+      ],
+      "rep": 30
+    },
+    "quest_sugar_cane": {
+      "msg": "Bring 16 sugar cane for my ancient scrolls!",
+      "cmds": [
+        "give {player} minecraft:paper 32"
+      ],
+      "rep": 15
+    },
+    "quest_leather": {
+      "msg": "I need 8 leather to bind my spellbooks!",
+      "cmds": [
+        "give {player} minecraft:chainmail_chestplate 1"
+      ],
+      "rep": 25
+    },
+    "quest_flint": {
+      "msg": "Collect 6 flint to spark my furnace!",
+      "cmds": [
+        "give {player} minecraft:flint_and_steel 1"
+      ],
+      "rep": 15
+    },
+    "quest_clay": {
+      "msg": "Bring 16 clay balls for gothic urns!",
+      "cmds": [
+        "give {player} minecraft:terracotta 16"
+      ],
+      "rep": 20
+    },
+    "quest_ink": {
+      "msg": "Fetch 4 ink sacs from the depths!",
+      "cmds": [
+        "give {player} minecraft:name_tag 2"
+      ],
+      "rep": 35
+    },
+    "quest_mushrooms": {
+      "msg": "Bring 10 brown mushrooms from dark caves!",
+      "cmds": [
+        "give {player} minecraft:mushroom_stew 2"
+      ],
+      "rep": 15
+    },
+    "quest_sand": {
+      "msg": "Fetch 32 sand to forge glass for my windows!",
+      "cmds": [
+        "give {player} minecraft:glass 32"
+      ],
+      "rep": 15
+    },
+    "quest_wool": {
+      "msg": "Bring 8 black wool for my velvet drapes!",
+      "cmds": [
+        "give {player} minecraft:black_carpet 16"
+      ],
+      "rep": 20
+    },
+    "quest_rotten_flesh": {
+      "msg": "Offer 20 rotten flesh to my hounds!",
+      "cmds": [
+        "give {player} minecraft:emerald 3"
+      ],
+      "rep": 25
+    }
+  }
+}
