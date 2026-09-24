@@ -3,7 +3,7 @@
 I wanted to build a Halloween-themed Minecraft server for me and my friends using a custom map, a unique texture pack, and an AI-powered NPC. At the center is Count 
 Nosferatu — a vampire who reads the server log, decides what he thinks of you, and acts on it — usually badly.
 
-The map isn't stored in the repository itself. Download `world.zip` from the [Releases page](https://github.com/YOUR_USERNAME/nosferatu-engine/releases) 
+The map isn't stored in the repository itself. Download `world.zip` from the [Releases page]([https://github.com/YOUR_USERNAME/nosferatu-engine/releases](https://github.com/AndyMrg-dev/mchalloween-server-ai/releases/tag/map)) 
 and unzip it into your server directory, so you end up with a `world` folder next to `paper.jar`. The folder name has to match `level-name` in `server.properties` (the default is `world`).
 
 The map is a port of the old PS3 Edition Halloween map and was not made for this project. Use it for your own server, but please don't re-upload it elsewhere.
